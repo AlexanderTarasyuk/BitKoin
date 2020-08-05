@@ -1,0 +1,56 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-android-extensions'
+    id 'kotlin-kapt'
+}
+
+android {
+    compileSdkVersion versions.compileVersion
+    buildToolsVersion versions.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion versions.minVersion
+        targetSdkVersion versions.targetVersion
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+
+    sourceSets {
+        test.resources.srcDirs += 'src/test/resources'
+    }
+}
+
+dependencies {
+    implementation kotlinDependencies.stdLib
+
+    implementation squareDependencies.retrofit
+    implementation squareDependencies.retrofitRxAdapter
+    implementation squareDependencies.converterGson
+    implementation squareDependencies.okhttp
+    implementation squareDependencies.loggingInterceptor
+    implementation rxDependencies.main
+    implementation daggerDependencies.main
+    implementation kotson
+    implementation jakeWhartonDependencies.timber
+
+    testImplementation testDependencies.junit
+    testImplementation testDependencies.mockitoCore
+    testImplementation testDependencies.mockitoKotlin
+    testImplementation kotson
+}

@@ -1,0 +1,108 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-android-extensions'
+    id 'kotlin-kapt'
+}
+
+android {
+    compileSdkVersion versions.compileVersion
+    buildToolsVersion versions.buildToolsVersion
+    defaultConfig {
+        applicationId "com.bitkoin"
+        minSdkVersion versions.minVersion
+        targetSdkVersion versions.targetVersion
+        versionCode 1
+        versionName "1.0"
+//        testInstrumentationRunner "com.tushar.bitkoin.base.BaseTestRunner"
+        vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
+
+        buildConfigField "String", "BLOCK_CHAIN_API_BASE_URL", '"https://api.blockchain.info/charts/"'
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+    }
+
+    testOptions {
+        animationsDisabled = true
+        unitTests.returnDefaultValues = true
+    }
+
+    sourceSets {
+        main { assets.srcDirs = ['src/main/assets', 'src/androidTest/assets/', 'src/main/assets/'] }
+    }
+}
+
+android.applicationVariants.all { v ->
+    if (v.buildType.name == "debug") {
+        apply plugin: "kotlin-allopen"
+        allOpen {
+            annotation('com.tushar.bitkoin.di.ClassOpen')
+        }
+    }
+}
+
+dependencies {
+    implementation project(':domain')
+    implementation project(':presentation')
+    implementation project(':data')
+
+    implementation androidxDependencies.multidex
+    implementation kotlinDependencies.stdLib
+
+    implementation daggerDependencies.main
+    kapt daggerDependencies.compiler
+    implementation daggerDependencies.android
+    kapt daggerDependencies.androidProcessor
+    implementation daggerDependencies.androidSupport
+
+    implementation androidxDependencies.appCompat
+    implementation androidxDependencies.design
+    implementation androidxDependencies.coreKtx
+    implementation androidxDependencies.constraintLayout
+    implementation androidxDependencies.lifecycleExtensions
+    annotationProcessor androidxDependencies.lifecylceCompiler
+    implementation androidxDependencies.lifecycleViewmodel
+
+    implementation rxDependencies.main
+    implementation rxDependencies.android
+
+    implementation squareDependencies.retrofit
+    implementation squareDependencies.retrofitRxAdapter
+    implementation squareDependencies.okhttp
+    implementation squareDependencies.loggingInterceptor
+    implementation squareDependencies.converterGson
+
+    implementation jakeWhartonDependencies.timber
+
+    implementation mPAndroidChart
+
+    androidTestImplementation testDependencies.mockitoCore
+    androidTestImplementation testDependencies.mockitoAndroid
+    androidTestImplementation (testDependencies.mockitoKotlin) {
+        exclude group: 'org.mockito', module: 'mockito-core'
+    }
+
+    androidTestImplementation testDependencies.androidXTestCore
+    androidTestImplementation testDependencies.androidXRunner
+    androidTestImplementation testDependencies.androidXTestRule
+    androidTestImplementation testDependencies.androidXJunit
+    androidTestImplementation testDependencies.espressoCore
+    androidTestImplementation testDependencies.mockWebServer
+    androidTestImplementation testDependencies.daggerMock
+    androidTestImplementation testDependencies.daggerMockKotlin
+    kaptAndroidTest daggerDependencies.compiler
+}
